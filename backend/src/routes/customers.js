@@ -4,14 +4,20 @@ const { Customer } = require('../models');
 const { authenticateToken } = require('../middleware/auth');
 const { callOpenRouter } = require('../services/aiService');
 
-// Get all customers
+// Get all customers with pagination
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    const customers = await Customer.findAll({
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Customer.findAndCountAll({
       where: { user_id: req.user.id },
-      order: [['name', 'ASC']]
+      order: [['name', 'ASC']],
+      limit,
+      offset
     });
-    res.json(customers);
+    res.json({ customers: rows, total: count, page, totalPages: Math.ceil(count / limit) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

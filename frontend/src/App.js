@@ -17,9 +17,34 @@ import ServiceContracts from './pages/ServiceContracts';
 import Permits from './pages/Permits';
 import Suppliers from './pages/Suppliers';
 import Reports from './pages/Reports';
+import AIHistory from './pages/AIHistory';
+import MaterialEstimate from './pages/MaterialEstimate';
+import ProjectTimeline from './pages/ProjectTimeline';
+import CodeComplianceChecker from './pages/CodeComplianceChecker';
+import QuoteEstimateAI from './pages/QuoteEstimateAI';
+import ScheduleOptimize from './pages/ScheduleOptimize';
 import Sidebar from './components/Sidebar';
 import Toast from './components/Toast';
 
+// // === Batch 06 Gaps & Frontend Mounts ===
+import CFAiJobEstimatorPage from './pages/CFAiJobEstimatorPage';
+import CFCodeComplianceAutomationPage from './pages/CFCodeComplianceAutomationPage';
+import CFRouteOptimizationPage from './pages/CFRouteOptimizationPage';
+import CFMaterialWastePredictionPage from './pages/CFMaterialWastePredictionPage';
+import CFTechnicianProductivityTrackingPage from './pages/CFTechnicianProductivityTrackingPage';
+import GapAihistoryJsStubNeedsRealImplementationPage from './pages/GapAihistoryJsStubNeedsRealImplementationPage';
+import GapJobquotesWithoutQuotePage from './pages/GapJobquotesWithoutQuotePage';
+import GapSchedulesWithoutSchedulePage from './pages/GapSchedulesWithoutSchedulePage';
+import GapCodeComplianceWithoutCodePage from './pages/GapCodeComplianceWithoutCodePage';
+import GapNoRealIntegrationWithPermitCodeDatabasesOnlPage from './pages/GapNoRealIntegrationWithPermitCodeDatabasesOnlPage';
+import GapNoCustomerFinancingOptionsCreditPaymentPlansPage from './pages/GapNoCustomerFinancingOptionsCreditPaymentPlansPage';
+import GapNoSupplyChainIntegrationMaterialOrderingAutoPage from './pages/GapNoSupplyChainIntegrationMaterialOrderingAutoPage';
+import GapLimitedPhotoDocumentationBeforeAfterPage from './pages/GapLimitedPhotoDocumentationBeforeAfterPage';
+import GapNoAccountingSystemIntegrationQuickbooksFreshbPage from './pages/GapNoAccountingSystemIntegrationQuickbooksFreshbPage';
+import GapNoNotificationsModuleGrep0Page from './pages/GapNoNotificationsModuleGrep0Page';
+import GapNoAuditLoggingGrep0Page from './pages/GapNoAuditLoggingGrep0Page';
+import GapNoWebhooksPage from './pages/GapNoWebhooksPage';
+import GapNoMobileAppForTechsPage from './pages/GapNoMobileAppForTechsPage';
 export const ToastContext = React.createContext();
 
 function App() {
@@ -92,8 +117,34 @@ function App() {
               <Route path="/permits" element={<Permits />} />
               <Route path="/suppliers" element={<Suppliers />} />
               <Route path="/reports" element={<Reports />} />
+              <Route path="/ai-history" element={<AIHistory />} />
+              <Route path="/ai-material-estimate" element={<MaterialEstimate />} />
+              <Route path="/ai-project-timeline" element={<ProjectTimeline />} />
+              <Route path="/ai-code-compliance" element={<CodeComplianceChecker />} />
+              <Route path="/ai-quote-estimate" element={<QuoteEstimateAI />} />
+              <Route path="/ai-schedule-optimize" element={<ScheduleOptimize />} />
               <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
+            
+          {/* // === Batch 06 Gaps & Frontend Mounts === */}
+          <Route path="/cf-ai-job-estimator" element={<CFAiJobEstimatorPage />} />
+          <Route path="/cf-code-compliance-automation" element={<CFCodeComplianceAutomationPage />} />
+          <Route path="/cf-route-optimization" element={<CFRouteOptimizationPage />} />
+          <Route path="/cf-material-waste-prediction" element={<CFMaterialWastePredictionPage />} />
+          <Route path="/cf-technician-productivity-tracking" element={<CFTechnicianProductivityTrackingPage />} />
+          <Route path="/gap-aihistory-js-stub-needs-real-implementation" element={<GapAihistoryJsStubNeedsRealImplementationPage />} />
+          <Route path="/gap-jobquotes-without-quote" element={<GapJobquotesWithoutQuotePage />} />
+          <Route path="/gap-schedules-without-schedule" element={<GapSchedulesWithoutSchedulePage />} />
+          <Route path="/gap-code-compliance-without-code" element={<GapCodeComplianceWithoutCodePage />} />
+          <Route path="/gap-no-real-integration-with-permit-code-databases-onl" element={<GapNoRealIntegrationWithPermitCodeDatabasesOnlPage />} />
+          <Route path="/gap-no-customer-financing-options-credit-payment-plans" element={<GapNoCustomerFinancingOptionsCreditPaymentPlansPage />} />
+          <Route path="/gap-no-supply-chain-integration-material-ordering-auto" element={<GapNoSupplyChainIntegrationMaterialOrderingAutoPage />} />
+          <Route path="/gap-limited-photo-documentation-before-after" element={<GapLimitedPhotoDocumentationBeforeAfterPage />} />
+          <Route path="/gap-no-accounting-system-integration-quickbooks-freshb" element={<GapNoAccountingSystemIntegrationQuickbooksFreshbPage />} />
+          <Route path="/gap-no-notifications-module-grep-0" element={<GapNoNotificationsModuleGrep0Page />} />
+          <Route path="/gap-no-audit-logging-grep-0" element={<GapNoAuditLoggingGrep0Page />} />
+          <Route path="/gap-no-webhooks" element={<GapNoWebhooksPage />} />
+          <Route path="/gap-no-mobile-app-for-techs" element={<GapNoMobileAppForTechsPage />} />
+        </Routes>
           </div>
         </div>
         <Toast toasts={toasts} />

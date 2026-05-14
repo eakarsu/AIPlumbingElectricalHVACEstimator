@@ -67,6 +67,16 @@ const JobQuote = sequelize.define('JobQuote', {
     type: DataTypes.STRING,
     defaultValue: 'medium'
   },
+  acceptedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'accepted_at'
+  },
+  customerSignature: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: 'customer_signature'
+  },
   userId: {
     type: DataTypes.INTEGER,
     field: 'user_id'

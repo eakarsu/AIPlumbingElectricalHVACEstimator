@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { CodeCompliance } = require('../models');
+const { CodeCompliance, AiResult } = require('../models');
 const { authenticateToken } = require('../middleware/auth');
-const { checkCodeCompliance } = require('../services/aiService');
+const { aiRateLimiter } = require('../middleware/rateLimiter');
+const { checkCodeCompliance, parseAIJson } = require('../services/aiService');
 
 // Get all
 router.get('/', authenticateToken, async (req, res) => {
@@ -69,12 +70,22 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 });
 
 // AI Compliance Check
-router.post('/ai/check', authenticateToken, async (req, res) => {
+router.post('/ai/check', authenticateToken, aiRateLimiter, async (req, res) => {
   try {
     const { description, jurisdiction, category } = req.body;
     const result = await checkCodeCompliance(description, jurisdiction, category);
     const aiContent = result.choices[0].message.content;
-    res.json({ compliance: aiContent });
+    const parsed = parseAIJson(aiContent);
+
+    // Persist to ai_results
+    await AiResult.create({
+      userId: req.user.id,
+      endpoint: 'code-compliance/ai/check',
+      quoteId: null,
+      result: parsed || { raw: aiContent }
+    });
+
+    res.json({ compliance: aiContent, parsed });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

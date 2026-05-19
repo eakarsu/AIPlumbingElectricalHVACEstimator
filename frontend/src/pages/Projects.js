@@ -19,16 +19,27 @@ function Projects() {
   const [editing, setEditing] = useState(false);
   const [aiResult, setAiResult] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
   const addToast = useContext(ToastContext);
 
-  const fetchItems = async () => {
+  const fetchItems = async (p = 1) => {
     try {
-      const { data } = await api.get('/projects');
-      setItems(data);
+      const { data } = await api.get(`/projects?page=${p}&limit=20`);
+      // Handle both paginated and legacy array responses
+      if (data && data.data) {
+        setItems(data.data);
+        setTotalPages(data.pagination?.totalPages || 1);
+        setTotal(data.pagination?.total || data.data.length);
+      } else if (Array.isArray(data)) {
+        setItems(data);
+        setTotal(data.length);
+      }
     } catch (err) { console.error(err); }
   };
 
-  useEffect(() => { fetchItems(); }, []);
+  useEffect(() => { fetchItems(page); }, [page]);
 
   const handleSave = async () => {
     try {
@@ -42,7 +53,7 @@ function Projects() {
       setShowForm(false);
       setFormData(emptyItem);
       setEditing(false);
-      fetchItems();
+      fetchItems(page);
     } catch (err) {
       addToast(err.response?.data?.error || 'Failed to save', 'error');
     }
@@ -54,7 +65,7 @@ function Projects() {
       await api.delete(`/projects/${id}`);
       addToast('Project deleted');
       setSelected(null);
-      fetchItems();
+      fetchItems(page);
     } catch (err) {
       addToast('Failed to delete', 'error');
     }
@@ -218,7 +229,7 @@ function Projects() {
         ) : (
           <div className="data-table-container">
             <div className="table-header">
-              <h3>All Projects ({items.length})</h3>
+              <h3>All Projects ({total})</h3>
             </div>
             <table className="data-table">
               <thead>
@@ -246,6 +257,13 @@ function Projects() {
                 ))}
               </tbody>
             </table>
+            {totalPages > 1 && (
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 12, padding: '16px 0' }}>
+                <button className="btn btn-secondary" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>Previous</button>
+                <span style={{ fontSize: 14, color: '#6b7280' }}>Page {page} of {totalPages}</span>
+                <button className="btn btn-secondary" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>Next</button>
+              </div>
+            )}
           </div>
         )}
 

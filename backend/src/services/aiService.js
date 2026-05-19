@@ -3,7 +3,7 @@ const http = require('http');
 require('dotenv').config({ path: require('path').join(__dirname, '../../../.env') });
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'anthropic/claude-haiku-4.5';
+const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'anthropic/claude-3-5-sonnet-20241022';
 
 async function callOpenRouter(messages) {
   const body = JSON.stringify({
@@ -49,15 +49,41 @@ async function callOpenRouter(messages) {
   });
 }
 
+// 3-strategy JSON parser for AI responses
+function parseAIJson(text) {
+  // Strategy 1: direct parse
+  try {
+    return JSON.parse(text);
+  } catch (e) {}
+
+  // Strategy 2: extract JSON from markdown code block
+  const codeBlockMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (codeBlockMatch) {
+    try {
+      return JSON.parse(codeBlockMatch[1].trim());
+    } catch (e) {}
+  }
+
+  // Strategy 3: find first { ... } block
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (jsonMatch) {
+    try {
+      return JSON.parse(jsonMatch[0]);
+    } catch (e) {}
+  }
+
+  return null;
+}
+
 async function analyzeJobQuote(description, jobType) {
   const messages = [
     {
       role: 'system',
-      content: 'You are an expert plumbing, electrical, and HVAC estimator. Provide detailed, professional cost estimates and job analysis. Always respond with structured analysis including: estimated cost range, labor hours, required materials, complexity level, and recommendations.'
+      content: 'You are an expert plumbing, electrical, and HVAC estimator. Provide detailed, professional cost estimates and job analysis. Always respond with valid JSON only, no extra text.'
     },
     {
       role: 'user',
-      content: `Analyze this ${jobType} job and provide a detailed estimate:\n\nJob Description: ${description}\n\nPlease provide:\n1. **Cost Estimate** (low and high range)\n2. **Labor Hours** needed\n3. **Required Materials** with approximate costs\n4. **Complexity Level** (Low/Medium/High)\n5. **Key Considerations** and potential issues\n6. **Recommendations** for the contractor`
+      content: `Analyze this ${jobType} job and provide a detailed estimate as JSON:\n\nJob Description: ${description}\n\nReturn ONLY valid JSON in this exact format:\n{"estimated_cost_range":{"min":0,"max":0},"labor_hours":0,"materials":[{"name":"","qty":0,"unit_cost":0}],"complexity":"low|medium|high|complex","risk_factors":[],"recommendations":[]}`
     }
   ];
   return callOpenRouter(messages);
@@ -67,11 +93,11 @@ async function estimateMaterials(jobDescription, jobType) {
   const messages = [
     {
       role: 'system',
-      content: 'You are an expert material estimator for plumbing, electrical, and HVAC projects. Provide detailed material lists with quantities and current market pricing.'
+      content: 'You are an expert material estimator for plumbing, electrical, and HVAC projects. Provide detailed material lists with quantities and current market pricing. Always respond with valid JSON only, no extra text.'
     },
     {
       role: 'user',
-      content: `Generate a detailed material estimate for this ${jobType} project:\n\n${jobDescription}\n\nProvide:\n1. **Complete Material List** with quantities\n2. **Unit Prices** (current market rates)\n3. **Total Material Cost**\n4. **Alternative/Budget Options** where available\n5. **Supplier Recommendations**\n6. **Waste Factor** considerations`
+      content: `Generate a detailed material estimate for this ${jobType} project:\n\n${jobDescription}\n\nReturn ONLY valid JSON in this exact format:\n{"bill_of_materials":[{"item":"","quantity":0,"unit":"","unit_price":0,"total":0}],"total_materials_cost":0,"lead_time_days":0}`
     }
   ];
   return callOpenRouter(messages);
@@ -81,11 +107,11 @@ async function checkCodeCompliance(description, jurisdiction, category) {
   const messages = [
     {
       role: 'system',
-      content: 'You are an expert in building codes for plumbing, electrical, and HVAC systems. Provide detailed compliance guidance based on IPC, NEC, and IMC codes.'
+      content: 'You are an expert in building codes for plumbing, electrical, and HVAC systems. Provide detailed compliance guidance based on IPC, NEC, and IMC codes. Always respond with valid JSON only, no extra text.'
     },
     {
       role: 'user',
-      content: `Check building code compliance for:\n\nProject: ${description}\nJurisdiction: ${jurisdiction || 'General US'}\nCategory: ${category}\n\nProvide:\n1. **Applicable Codes** and references\n2. **Requirements** that must be met\n3. **Common Violations** to avoid\n4. **Permit Requirements**\n5. **Inspection Checklist**\n6. **Compliance Recommendations**`
+      content: `Check building code compliance for:\n\nProject: ${description}\nJurisdiction: ${jurisdiction || 'General US'}\nCategory: ${category}\n\nReturn ONLY valid JSON in this exact format:\n{"compliant":true,"code_sections":[{"code":"","section":"","requirement":"","status":"pass|fail|warning"}],"violations":[],"recommendations":[]}`
     }
   ];
   return callOpenRouter(messages);
@@ -133,12 +159,33 @@ async function analyzeTechnicianWorkload(technicians, jobs) {
   return callOpenRouter(messages);
 }
 
+async function analyzePhoto(base64Image) {
+  const messages = [
+    {
+      role: 'user',
+      content: [
+        {
+          type: 'image_url',
+          image_url: { url: `data:image/jpeg;base64,${base64Image}` }
+        },
+        {
+          type: 'text',
+          text: 'Analyze this plumbing/electrical/HVAC system photo. Identify: equipment type, age/condition, visible issues, required work. Return JSON: {"service_type":"plumbing|electrical|hvac|multi","equipment_identified":[],"condition":"new|good|fair|poor|critical","visible_issues":[],"estimated_scope":"minor|moderate|major","suggested_services":[],"preliminary_cost_range":{"min":0,"max":0}}'
+        }
+      ]
+    }
+  ];
+  return callOpenRouter(messages);
+}
+
 module.exports = {
   callOpenRouter,
+  parseAIJson,
   analyzeJobQuote,
   estimateMaterials,
   checkCodeCompliance,
   optimizeSchedule,
   generateInvoiceAnalysis,
-  analyzeTechnicianWorkload
+  analyzeTechnicianWorkload,
+  analyzePhoto
 };

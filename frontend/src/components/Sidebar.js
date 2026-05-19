@@ -14,7 +14,26 @@ function Sidebar({ user, onLogout }) {
         { path: '/projects', label: 'Projects', icon: '🏗️' },
         { path: '/schedules', label: 'Scheduling', icon: '📅' },
         { path: '/invoices', label: 'Invoicing', icon: '💰' },
-      ]
+  // === Batch 06 Gaps & Frontend Mounts ===
+  { path: '/cf-ai-job-estimator', label: 'AI job estimator', icon: '✨' },
+  { path: '/cf-code-compliance-automation', label: 'Code compliance automation', icon: '✨' },
+  { path: '/cf-route-optimization', label: 'Route optimization', icon: '✨' },
+  { path: '/cf-material-waste-prediction', label: 'Material waste prediction', icon: '✨' },
+  { path: '/cf-technician-productivity-tracking', label: 'Technician productivity tracking', icon: '✨' },
+  { path: '/gap-aihistory-js-stub-needs-real-implementation', label: '`aiHistory.js` stub needs real implementation', icon: '✨' },
+  { path: '/gap-jobquotes-without-quote', label: 'JobQuotes without `/quote', icon: '✨' },
+  { path: '/gap-schedules-without-schedule', label: 'Schedules without `/schedule', icon: '✨' },
+  { path: '/gap-code-compliance-without-code', label: 'Code compliance without `/code', icon: '✨' },
+  { path: '/gap-no-real-integration-with-permit-code-databases-onl', label: 'No real integration with permit/code databases (only generic integrations module)', icon: '✨' },
+  { path: '/gap-no-customer-financing-options-credit-payment-plans', label: 'No customer financing options (credit, payment plans)', icon: '✨' },
+  { path: '/gap-no-supply-chain-integration-material-ordering-auto', label: 'No supply chain integration (material ordering automation)', icon: '✨' },
+  { path: '/gap-limited-photo-documentation-before-after', label: 'Limited photo documentation (before/after)', icon: '✨' },
+  { path: '/gap-no-accounting-system-integration-quickbooks-freshb', label: 'No accounting system integration (QuickBooks, FreshBooks)', icon: '✨' },
+  { path: '/gap-no-notifications-module-grep-0', label: 'No notifications module (grep 0)', icon: '✨' },
+  { path: '/gap-no-audit-logging-grep-0', label: 'No audit logging (grep 0)', icon: '✨' },
+  { path: '/gap-no-webhooks', label: 'No webhooks', icon: '✨' },
+  { path: '/gap-no-mobile-app-for-techs', label: 'No mobile app for techs', icon: '✨' }
+]
     },
     {
       title: 'Resources',
@@ -40,6 +59,23 @@ function Sidebar({ user, onLogout }) {
       items: [
         { path: '/expenses', label: 'Expenses', icon: '💳' },
         { path: '/reports', label: 'Reports & Analytics', icon: '📈' },
+      ]
+    },
+    {
+      title: 'Estimator Views',
+      items: [
+        { path: '/custom-views', label: 'Estimator Views', icon: '📐' },
+      ]
+    },
+    {
+      title: 'AI Tools',
+      items: [
+        { path: '/ai-material-estimate', label: 'Material Estimator', icon: '🔩' },
+        { path: '/ai-project-timeline', label: 'Project Timeline', icon: '📆' },
+        { path: '/ai-code-compliance', label: 'Code Compliance', icon: '⚖️' },
+        { path: '/ai-quote-estimate', label: 'Quote Estimator', icon: '💵' },
+        { path: '/ai-schedule-optimize', label: 'Schedule Optimizer', icon: '🗓️' },
+        { path: '/ai-history', label: 'AI History', icon: '🤖' },
       ]
     }
   ];

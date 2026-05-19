@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { Material } = require('../models');
+const { Material, AiResult } = require('../models');
 const { authenticateToken } = require('../middleware/auth');
-const { estimateMaterials } = require('../services/aiService');
+const { aiRateLimiter } = require('../middleware/rateLimiter');
+const { estimateMaterials, parseAIJson } = require('../services/aiService');
 
 // Get all materials
 router.get('/', authenticateToken, async (req, res) => {
@@ -69,12 +70,22 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 });
 
 // AI Material Estimation
-router.post('/ai/estimate', authenticateToken, async (req, res) => {
+router.post('/ai/estimate', authenticateToken, aiRateLimiter, async (req, res) => {
   try {
     const { description, jobType } = req.body;
     const result = await estimateMaterials(description, jobType);
     const aiContent = result.choices[0].message.content;
-    res.json({ estimation: aiContent });
+    const parsed = parseAIJson(aiContent);
+
+    // Persist to ai_results
+    await AiResult.create({
+      userId: req.user.id,
+      endpoint: 'materials/ai/estimate',
+      quoteId: null,
+      result: parsed || { raw: aiContent }
+    });
+
+    res.json({ estimation: aiContent, parsed });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -14,9 +14,10 @@ const Equipment = require('./Equipment');
 const ServiceContract = require('./ServiceContract');
 const Permit = require('./Permit');
 const Supplier = require('./Supplier');
+const AiResult = require('./AiResult');
 
 // Associations
-const models = [JobQuote, Material, CodeCompliance, Schedule, Invoice, Technician, Customer, Project, Expense, Warranty, Equipment, ServiceContract, Permit, Supplier];
+const models = [JobQuote, Material, CodeCompliance, Schedule, Invoice, Technician, Customer, Project, Expense, Warranty, Equipment, ServiceContract, Permit, Supplier, AiResult];
 models.forEach(Model => {
   User.hasMany(Model, { foreignKey: 'user_id' });
   Model.belongsTo(User, { foreignKey: 'user_id' });
@@ -24,5 +25,5 @@ models.forEach(Model => {
 
 module.exports = {
   sequelize, User, JobQuote, Material, CodeCompliance, Schedule, Invoice,
-  Technician, Customer, Project, Expense, Warranty, Equipment, ServiceContract, Permit, Supplier
+  Technician, Customer, Project, Expense, Warranty, Equipment, ServiceContract, Permit, Supplier, AiResult
 };

@@ -97,6 +97,12 @@ app.use('/api/gap-no-audit-logging-grep-0', require('./routes/gapFeat_no_audit_l
 app.use('/api/gap-no-webhooks', require('./routes/gapFeat_no_webhooks'));
 app.use('/api/gap-no-mobile-app-for-techs', require('./routes/gapFeat_no_mobile_app_for_techs'));
 
+// === Custom Views (4 features) - mounted BEFORE any 404 handler ===
+app.use('/api/custom-views', require('./routes/customViews'));
+
+// 404 handler for unknown /api routes
+app.use('/api', (req, res) => res.status(404).json({ error: 'Not found', path: req.originalUrl }));
+
 app.listen(PORT, () => {
       console.log(`Backend server running on http://localhost:${PORT}`);
     });

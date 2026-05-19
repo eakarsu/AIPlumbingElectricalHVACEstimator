@@ -45,6 +45,7 @@ import GapNoNotificationsModuleGrep0Page from './pages/GapNoNotificationsModuleG
 import GapNoAuditLoggingGrep0Page from './pages/GapNoAuditLoggingGrep0Page';
 import GapNoWebhooksPage from './pages/GapNoWebhooksPage';
 import GapNoMobileAppForTechsPage from './pages/GapNoMobileAppForTechsPage';
+import CustomViewsPage from './pages/CustomViewsPage';
 export const ToastContext = React.createContext();
 
 function App() {
@@ -144,6 +145,7 @@ function App() {
           <Route path="/gap-no-audit-logging-grep-0" element={<GapNoAuditLoggingGrep0Page />} />
           <Route path="/gap-no-webhooks" element={<GapNoWebhooksPage />} />
           <Route path="/gap-no-mobile-app-for-techs" element={<GapNoMobileAppForTechsPage />} />
+          <Route path="/custom-views" element={<CustomViewsPage />} />
         </Routes>
           </div>
         </div>

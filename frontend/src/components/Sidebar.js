@@ -62,6 +62,12 @@ function Sidebar({ user, onLogout }) {
       ]
     },
     {
+      title: 'Estimator Views',
+      items: [
+        { path: '/custom-views', label: 'Estimator Views', icon: '📐' },
+      ]
+    },
+    {
       title: 'AI Tools',
       items: [
         { path: '/ai-material-estimate', label: 'Material Estimator', icon: '🔩' },

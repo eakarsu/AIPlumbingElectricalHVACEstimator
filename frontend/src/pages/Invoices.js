@@ -194,7 +194,6 @@ function Invoices() {
                 <div className="total-row grand-total"><span>Total:</span><span>${parseFloat(selected.totalAmount || 0).toFixed(2)}</span></div>
               </div>
               {selected.notes && <div style={{ marginTop: 32, fontSize: 12, color: '#666' }}><strong>Notes:</strong> {selected.notes}</div>}
-              </div>
             </div>
           </>
         ) : (

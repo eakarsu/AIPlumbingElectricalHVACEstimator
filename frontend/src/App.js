@@ -46,6 +46,11 @@ import GapNoAuditLoggingGrep0Page from './pages/GapNoAuditLoggingGrep0Page';
 import GapNoWebhooksPage from './pages/GapNoWebhooksPage';
 import GapNoMobileAppForTechsPage from './pages/GapNoMobileAppForTechsPage';
 import CustomViewsPage from './pages/CustomViewsPage';
+import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
+import CodexOperationsFeature from './pages/CodexOperationsFeature';
+
+import TimelineView from './pages/TimelineView';
+
 export const ToastContext = React.createContext();
 
 function App() {
@@ -102,6 +107,10 @@ function App() {
           <Sidebar user={user} onLogout={handleLogout} />
           <div className="main-content">
             <Routes>
+        <Route path="/insights/timeline" element={<TimelineView />} />
+        <Route path="/codex/custom-viz" element={<CodexCustomVizFeature />} />
+        <Route path="/codex/operations" element={<CodexOperationsFeature />} />
+
               <Route path="/" element={<Dashboard />} />
               <Route path="/job-quotes" element={<JobQuotes />} />
               <Route path="/materials" element={<Materials />} />

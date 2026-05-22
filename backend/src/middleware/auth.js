@@ -28,4 +28,10 @@ function generateToken(user) {
   );
 }
 
-module.exports = { authenticateToken, generateToken };
+// Export as callable (acts as authenticateToken when invoked directly)
+// while preserving named exports for { authenticateToken, generateToken } consumers.
+function exported(req, res, next) { return authenticateToken(req, res, next); }
+exported.authenticateToken = authenticateToken;
+exported.generateToken = generateToken;
+module.exports = exported;
+module.exports.default = authenticateToken;

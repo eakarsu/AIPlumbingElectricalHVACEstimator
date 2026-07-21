@@ -2,6 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+const { validateRuntime } = require('./governance/runtime');
+const { createProviderGate } = require('./governance/providerGate');
+const governanceRouter = require('./governance/router');
+const authMiddleware = require('./middleware/auth');
+
+validateRuntime();
 
 const { sequelize } = require('./models');
 
@@ -30,15 +36,16 @@ const helmet = require('helmet');
 app.use(helmet());
 
 // Middleware
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
-  credentials: true
-}));
+const allowedOrigins = String(process.env.CORS_ORIGINS || process.env.CLIENT_URL || 'http://localhost:3000').split(',').map((value) => value.trim()).filter(Boolean);
+app.use(cors({ origin: (origin, callback) => !origin || allowedOrigins.includes(origin) ? callback(null, true) : callback(new Error('Origin not allowed by CORS')), credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+app.use(createProviderGate(['/api/ai', '/api/gap', '/api/cf']));
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.get('/api/health', (_req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
+app.use('/api', authMiddleware);
 app.use('/api/job-quotes', jobQuoteRoutes);
 app.use('/api/materials', materialRoutes);
 app.use('/api/code-compliance', codeComplianceRoutes);
@@ -57,6 +64,7 @@ app.use('/api/ai', aiHistoryRoutes);
 app.use('/api/integrations', require('./routes/integrations'));
 // Alias: /api/estimates maps to job-quotes (file upload endpoint uses estimates/:id/upload)
 app.use('/api/estimates', jobQuoteRoutes);
+app.use('/api/governed-trade-orders', governanceRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -70,8 +78,10 @@ async function start() {
     console.log('Database connected');
 
     // Use migrations for schema changes in production
-    await sequelize.sync({ alter: false });
-    console.log('Models synchronized');
+    if (process.env.ENABLE_LEGACY_SCHEMA_BOOTSTRAP === 'true') {
+      await sequelize.sync({ alter: false });
+      console.log('Legacy model synchronization completed by explicit opt-in');
+    }
 
     
 // === Custom Feature Mounts (batch_06) ===

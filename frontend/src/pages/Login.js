@@ -34,8 +34,8 @@ function Login({ onLogin }) {
   };
 
   const fillDemo = () => {
-    setEmail('demo@hvacpro.com');
-    setPassword('password123');
+    setEmail(process.env.REACT_APP_DEMO_EMAIL || '');
+    setPassword(process.env.REACT_APP_DEMO_PASSWORD || '');
     setIsRegister(false);
   };
 

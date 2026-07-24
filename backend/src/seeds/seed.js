@@ -1,12 +1,18 @@
 const { sequelize, User, JobQuote, Material, CodeCompliance, Schedule, Invoice, Technician, Customer, Project, Expense, Warranty, Equipment, ServiceContract, Permit, Supplier } = require('../models');
 const bcrypt = require('bcryptjs');
 
+function requireDemoPassword() {
+  const password = process.env.DEMO_PASSWORD || process.env.SEED_DEMO_PASSWORD || process.env.DEMO_SEED_PASSWORD || '';
+  if (password.length < 12 || password.length > 1024) throw new Error('DEMO_PASSWORD must contain 12-1024 characters');
+  return password;
+}
+
 async function seed() {
   try {
     await sequelize.sync({ force: true });
     console.log('Database synced. Seeding data...');
 
-    const hashedPassword = await bcrypt.hash('password123', 10);
+    const hashedPassword = await bcrypt.hash(requireDemoPassword(), 10);
     const user = await User.create({
       name: 'John Contractor', email: 'demo@hvacpro.com', password: hashedPassword,
       company: 'ProTrades HVAC & Plumbing', role: 'contractor'
@@ -294,7 +300,7 @@ async function seed() {
     console.log('  ✓ 15 Suppliers seeded');
 
     console.log('\n✅ Database seeded successfully! (15 features × 15 items = 225 records)');
-    console.log('  Demo Login: demo@hvacpro.com / password123\n');
+    console.log('Demo login users provisioned from the local environment.');
     process.exit(0);
   } catch (err) {
     console.error('Seed error:', err);

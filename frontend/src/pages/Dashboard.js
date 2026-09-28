@@ -17,7 +17,14 @@ function Dashboard() {
           'equipment', 'service-contracts', 'permits', 'suppliers'
         ];
         const results = await Promise.all(endpoints.map(e => api.get(`/${e}`).catch(() => ({ data: [] }))));
-        const [quotes, materials, compliance, schedules, invoices, customers, technicians, projects, expenses, warranties, equipment, contracts, permits, suppliers] = results.map(r => r.data);
+        const paginatedKeys = { 'job-quotes': 'quotes', customers: 'customers', projects: 'projects' };
+        const lists = results.map((result, index) => {
+          const payload = result.data;
+          if (Array.isArray(payload)) return payload;
+          const key = paginatedKeys[endpoints[index]];
+          return key && Array.isArray(payload?.[key]) ? payload[key] : [];
+        });
+        const [quotes, materials, compliance, schedules, invoices, customers, technicians, projects, expenses, warranties, equipment, contracts, permits, suppliers] = lists;
 
         const paidRevenue = invoices.filter(i => i.status === 'paid').reduce((s, i) => s + parseFloat(i.totalAmount || 0), 0);
         const totalExpenses = expenses.reduce((s, e) => s + parseFloat(e.amount || 0), 0);

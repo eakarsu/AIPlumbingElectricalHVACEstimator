@@ -118,7 +118,7 @@ function Login({ onLogin }) {
         <div className="demo-credentials">
           <p>Quick Demo Access</p>
           <button type="button" className="demo-btn" onClick={fillDemo}>
-            Fill Demo Credentials (demo@hvacpro.com)
+            Auto Fill Demo Credentials
           </button>
         </div>
       </div>

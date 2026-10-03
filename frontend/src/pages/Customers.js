@@ -49,7 +49,12 @@ function Customers() {
   }, [items, searchTerm, filterPropertyType, sortBy]);
 
   const fetchItems = async () => {
-    try { const { data } = await api.get('/customers'); setItems(data); } catch (err) { console.error(err); }
+    try {
+      const { data } = await api.get('/customers');
+      const customers = Array.isArray(data) ? data : data?.customers;
+      if (!Array.isArray(customers)) throw new Error('Invalid customers response');
+      setItems(customers);
+    } catch (err) { console.error(err); }
   };
   useEffect(() => { fetchItems(); }, []);
 

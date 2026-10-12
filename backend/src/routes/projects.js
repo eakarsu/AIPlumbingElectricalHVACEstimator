@@ -90,7 +90,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 });
 
 // AI Project Status Analysis for existing project
-router.post('/:id/analyze', authenticateToken, aiRateLimiter, async (req, res) => {
+router.post('/:id(\\d+)/analyze', authenticateToken, aiRateLimiter, async (req, res) => {
   try {
     const item = await Project.findOne({
       where: { id: req.params.id, user_id: req.user.id }

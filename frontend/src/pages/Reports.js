@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react';
 import api from '../services/api';
+import { listPayload } from '../services/listPayload';
 import AIOutput from '../components/AIOutput';
 import { ToastContext } from '../App';
 
@@ -39,15 +40,15 @@ function Reports() {
           api.get('/customers'),
           api.get('/service-contracts')
         ]);
-        setQuotes(quotesRes.data);
-        setMaterials(materialsRes.data);
-        setInvoices(invoicesRes.data);
-        setExpenses(expensesRes.data);
-        setSchedules(schedulesRes.data);
-        setProjects(projectsRes.data);
-        setTechnicians(techniciansRes.data);
-        setCustomers(customersRes.data);
-        setContracts(contractsRes.data);
+        setQuotes(listPayload(quotesRes.data, 'quotes'));
+        setMaterials(listPayload(materialsRes.data));
+        setInvoices(listPayload(invoicesRes.data));
+        setExpenses(listPayload(expensesRes.data));
+        setSchedules(listPayload(schedulesRes.data));
+        setProjects(listPayload(projectsRes.data, 'projects'));
+        setTechnicians(listPayload(techniciansRes.data));
+        setCustomers(listPayload(customersRes.data, 'customers'));
+        setContracts(listPayload(contractsRes.data));
       } catch (err) {
         console.error('Failed to fetch report data:', err);
         addToast('Failed to load report data', 'error');
@@ -153,7 +154,7 @@ function Reports() {
     : '0.0';
   const topSpenders = [...customers]
     .sort((a, b) => parseFloat(b.totalSpent || 0) - parseFloat(a.totalSpent || 0))
-    .slice(0, 5);
+    .slice(0, 15);
 
   // Contract revenue
   const activeContracts = contracts.filter(c => c.status === 'active');
@@ -482,7 +483,7 @@ function Reports() {
         </div>
         {topSpenders.length > 0 && (
           <div style={{ marginTop: 16 }}>
-            <h4 style={{ fontSize: 15, fontWeight: 600, marginBottom: 12, color: '#374151' }}>Top 5 Spenders</h4>
+            <h4 style={{ fontSize: 15, fontWeight: 600, marginBottom: 12, color: '#374151' }}>Top 15 Spenders</h4>
             <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #e5e7eb', overflow: 'hidden' }}>
               {topSpenders.map((c, i) => (
                 <div key={c.id || i} style={{

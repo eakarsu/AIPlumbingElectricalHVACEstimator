@@ -1,5 +1,8 @@
+import AIWorkspaceModal from '../components/AIWorkspaceModal';
+import '../components/AIWorkspace.css';
 import React, { useState, useEffect, useContext, useMemo } from 'react';
 import api from '../services/api';
+import { listPayload } from '../services/listPayload';
 import Modal from '../components/Modal';
 import AIOutput from '../components/AIOutput';
 import SearchFilter from '../components/SearchFilter';
@@ -50,7 +53,7 @@ function Invoices() {
   const handlePrint = () => window.print();
 
   const fetchItems = async () => {
-    try { const { data } = await api.get('/invoices'); setItems(data); } catch (err) { console.error(err); }
+    try { const { data } = await api.get('/invoices'); setItems(listPayload(data)); } catch (err) { console.error(err); }
   };
   useEffect(() => { fetchItems(); }, []);
 
@@ -110,7 +113,7 @@ function Invoices() {
         {selected ? (
           <>
             <div className="back-link" onClick={() => { setSelected(null); setAiResult(''); }}>← Back to list</div>
-            <div className="detail-view">
+            <AIWorkspaceModal title="Record details" onClose={() => setSelected(null)}>
               <div className="detail-header">
                 <div>
                   <h3 style={{ fontSize: 20, fontWeight: 700 }}>{selected.invoiceNumber}</h3>
@@ -157,7 +160,7 @@ function Invoices() {
                 {selected.notes && <div className="detail-field" style={{ marginTop: 16 }}><div className="label">Notes</div><div className="value">{selected.notes}</div></div>}
                 <AIOutput content={aiResult} loading={aiLoading} title="AI Invoice Analysis" />
               </div>
-            </div>
+            </AIWorkspaceModal>
 
             {/* Print View - only visible when printing */}
             <div className="print-view">

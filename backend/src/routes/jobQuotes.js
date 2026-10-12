@@ -128,7 +128,7 @@ router.put('/:id/customer-accept', authenticateToken, async (req, res) => {
 });
 
 // AI Analysis for job quote
-router.post('/:id/analyze', authenticateToken, aiRateLimiter, async (req, res) => {
+router.post('/:id(\\d+)/analyze', authenticateToken, aiRateLimiter, async (req, res) => {
   try {
     const quote = await JobQuote.findOne({
       where: { id: req.params.id, user_id: req.user.id }

@@ -34,9 +34,14 @@ function Login({ onLogin }) {
   };
 
   const fillDemo = () => {
-    setEmail(process.env.REACT_APP_DEMO_EMAIL || '');
-    setPassword(process.env.REACT_APP_DEMO_PASSWORD || '');
+    if (!process.env.REACT_APP_DEMO_EMAIL || !process.env.REACT_APP_DEMO_PASSWORD) {
+      setError('Demo credentials are not configured for this browser build. Ask the administrator for access.');
+      return;
+    }
+    setEmail(process.env.REACT_APP_DEMO_EMAIL);
+    setPassword(process.env.REACT_APP_DEMO_PASSWORD);
     setIsRegister(false);
+    setError('');
   };
 
   return (
@@ -118,7 +123,7 @@ function Login({ onLogin }) {
         <div className="demo-credentials">
           <p>Quick Demo Access</p>
           <button type="button" className="demo-btn" onClick={fillDemo}>
-            Auto Fill Demo Credentials
+            Fill Demo Credentials
           </button>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { listPayload } from '../services/listPayload';
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -20,9 +21,8 @@ function Dashboard() {
         const paginatedKeys = { 'job-quotes': 'quotes', customers: 'customers', projects: 'projects' };
         const lists = results.map((result, index) => {
           const payload = result.data;
-          if (Array.isArray(payload)) return payload;
           const key = paginatedKeys[endpoints[index]];
-          return key && Array.isArray(payload?.[key]) ? payload[key] : [];
+          return listPayload(payload, key);
         });
         const [quotes, materials, compliance, schedules, invoices, customers, technicians, projects, expenses, warranties, equipment, contracts, permits, suppliers] = lists;
 
@@ -84,7 +84,7 @@ function Dashboard() {
 
     return activities
       .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
-      .slice(0, 8);
+      .slice(0, 15);
   }, [allData]);
 
   // Upcoming deadlines
@@ -142,7 +142,7 @@ function Dashboard() {
       }
     });
 
-    return deadlines.sort((a, b) => a.date - b.date).slice(0, 8);
+    return deadlines.sort((a, b) => a.date - b.date).slice(0, 15);
   }, [allData]);
 
   // Overdue invoices alert

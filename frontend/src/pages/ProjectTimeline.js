@@ -1,3 +1,5 @@
+
+import FullAIExamples, { useFullAIExamples } from "../components/FullAIExamples.jsx";
 import React, { useState, useContext } from 'react';
 import api from '../services/api';
 import AIOutput from '../components/AIOutput';
@@ -11,6 +13,8 @@ const emptyForm = {
 };
 
 function ProjectTimeline() {
+  const fullAIExamples = useFullAIExamples();
+
   const [formData, setFormData] = useState(emptyForm);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -50,11 +54,11 @@ function ProjectTimeline() {
       </div>
       <div className="page-body">
         <div className="data-table-container" style={{ marginBottom: 24 }}>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} data-full-ai-workspace="ProjectTimeline"><FullAIExamples controller={fullAIExamples} disabled={Boolean(loading)} />
             <div className="form-row">
               <div className="form-group">
                 <label>Project Type *</label>
-                <select className="form-control" value={formData.projectType} onChange={e => setFormData({ ...formData, projectType: e.target.value })}>
+                <select className="form-control" value={formData.projectType} onChange={e => setFormData({ ...formData, projectType: e.target.value })} data-full-ai-field={fullAIExamples.bind({ current: formData.projectType, change: e => setFormData({ ...formData, projectType: e.target.value }), label: "formData.projectType", manual: false, json: false }, "p1-1841", undefined)}>
                   <option>Plumbing</option>
                   <option>Electrical</option>
                   <option>HVAC</option>
@@ -63,11 +67,11 @@ function ProjectTimeline() {
               </div>
               <div className="form-group">
                 <label>Start Date</label>
-                <input className="form-control" type="date" value={formData.startDate} onChange={e => setFormData({ ...formData, startDate: e.target.value })} />
+                <input className="form-control" type="date" value={formData.startDate} onChange={e => setFormData({ ...formData, startDate: e.target.value })} data-full-ai-field={fullAIExamples.bind({ current: formData.startDate, change: e => setFormData({ ...formData, startDate: e.target.value }), label: "formData.startDate", manual: false, json: false }, "p1-2303", undefined)} />
               </div>
               <div className="form-group">
                 <label>Team Size (technicians)</label>
-                <input className="form-control" type="number" min="1" value={formData.teamSize} onChange={e => setFormData({ ...formData, teamSize: e.target.value })} placeholder="e.g., 3" />
+                <input className="form-control" type="number" min="1" value={formData.teamSize} onChange={e => setFormData({ ...formData, teamSize: e.target.value })} placeholder="e.g., 3" data-full-ai-field={fullAIExamples.bind({ current: formData.teamSize, change: e => setFormData({ ...formData, teamSize: e.target.value }), label: "formData.teamSize", manual: false, json: false }, "p1-2584", undefined)} />
               </div>
             </div>
             <div className="form-group">
@@ -78,7 +82,7 @@ function ProjectTimeline() {
                 value={formData.projectScope}
                 onChange={e => setFormData({ ...formData, projectScope: e.target.value })}
                 placeholder="Describe the full project scope - e.g., Complete HVAC system replacement for 3000 sq ft commercial building including ductwork removal, new unit installation, controls, and commissioning..."
-                required
+                required data-full-ai-field={fullAIExamples.bind({ current: formData.projectScope, change: e => setFormData({ ...formData, projectScope: e.target.value }), label: "formData.projectScope", manual: false, json: false }, "p1-2900", undefined)}
               />
             </div>
             <button type="submit" className="btn btn-ai" disabled={loading}>

@@ -1,5 +1,8 @@
+import AIWorkspaceModal from '../components/AIWorkspaceModal';
+import '../components/AIWorkspace.css';
 import React, { useState, useEffect, useContext, useMemo } from 'react';
 import api from '../services/api';
+import { listPayload } from '../services/listPayload';
 import Modal from '../components/Modal';
 import AIOutput from '../components/AIOutput';
 import SearchFilter from '../components/SearchFilter';
@@ -53,7 +56,7 @@ function Schedules() {
   }, [items, searchTerm, filterType, filterStatus, sortBy]);
 
   const fetchItems = async () => {
-    try { const { data } = await api.get('/schedules'); setItems(data); } catch (err) { console.error(err); }
+    try { const { data } = await api.get('/schedules'); setItems(listPayload(data)); } catch (err) { console.error(err); }
   };
   useEffect(() => { fetchItems(); }, []);
 
@@ -98,7 +101,7 @@ function Schedules() {
         {selected ? (
           <>
             <div className="back-link" onClick={() => setSelected(null)}>← Back to list</div>
-            <div className="detail-view">
+            <AIWorkspaceModal title="Record details" onClose={() => setSelected(null)}>
               <div className="detail-header">
                 <div>
                   <h3 style={{ fontSize: 20, fontWeight: 700 }}>{selected.title}</h3>
@@ -124,7 +127,7 @@ function Schedules() {
                 {selected.description && <div className="detail-field" style={{ marginTop: 16 }}><div className="label">Description</div><div className="value">{selected.description}</div></div>}
                 {selected.notes && <div className="detail-field" style={{ marginTop: 16 }}><div className="label">Notes</div><div className="value" style={{ background: '#fffbeb', padding: 12, borderRadius: 8, border: '1px solid #fde68a' }}>{selected.notes}</div></div>}
               </div>
-            </div>
+            </AIWorkspaceModal>
           </>
         ) : (
           <div className="data-table-container">

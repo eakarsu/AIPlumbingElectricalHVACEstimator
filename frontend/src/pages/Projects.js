@@ -1,5 +1,8 @@
+import AIWorkspaceModal from '../components/AIWorkspaceModal';
+import '../components/AIWorkspace.css';
 import React, { useState, useEffect, useContext } from 'react';
 import api from '../services/api';
+import { listPayload } from '../services/listPayload';
 import Modal from '../components/Modal';
 import AIOutput from '../components/AIOutput';
 import { ToastContext } from '../App';
@@ -28,13 +31,17 @@ function Projects() {
     try {
       const { data } = await api.get(`/projects?page=${p}&limit=20`);
       // Handle both paginated and legacy array responses
-      if (data && data.data) {
-        setItems(data.data);
+      if (Array.isArray(data?.data)) {
+        setItems(listPayload(data));
         setTotalPages(data.pagination?.totalPages || 1);
         setTotal(data.pagination?.total || data.data.length);
       } else if (Array.isArray(data)) {
         setItems(data);
         setTotal(data.length);
+      } else {
+        setItems([]);
+        setTotal(0);
+        setTotalPages(1);
       }
     } catch (err) { console.error(err); }
   };
@@ -129,7 +136,7 @@ function Projects() {
             <div className="back-link" onClick={() => { setSelected(null); setAiResult(''); }}>
               ← Back to list
             </div>
-            <div className="detail-view">
+            <AIWorkspaceModal title="Record details" onClose={() => setSelected(null)}>
               <div className="detail-header">
                 <div>
                   <h3 style={{ fontSize: 20, fontWeight: 700 }}>{selected.name}</h3>
@@ -224,7 +231,7 @@ function Projects() {
                 )}
                 <AIOutput content={aiResult} loading={aiLoading} title="AI Project Analysis" />
               </div>
-            </div>
+            </AIWorkspaceModal>
           </>
         ) : (
           <div className="data-table-container">

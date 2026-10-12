@@ -1,5 +1,8 @@
+import AIWorkspaceModal from '../components/AIWorkspaceModal';
+import '../components/AIWorkspace.css';
 import React, { useState, useEffect, useContext, useMemo } from 'react';
 import api from '../services/api';
+import { listPayload } from '../services/listPayload';
 import Modal from '../components/Modal';
 import AIOutput from '../components/AIOutput';
 import SearchFilter from '../components/SearchFilter';
@@ -67,7 +70,7 @@ function Materials() {
   );
 
   const fetchItems = async () => {
-    try { const { data } = await api.get('/materials'); setItems(data); } catch (err) { console.error(err); }
+    try { const { data } = await api.get('/materials'); setItems(listPayload(data)); } catch (err) { console.error(err); }
   };
   useEffect(() => { fetchItems(); }, []);
 
@@ -184,7 +187,7 @@ function Materials() {
         {selected ? (
           <>
             <div className="back-link" onClick={() => setSelected(null)}>← Back to list</div>
-            <div className="detail-view">
+            <AIWorkspaceModal title="Record details" onClose={() => setSelected(null)}>
               <div className="detail-header">
                 <div>
                   <h3 style={{ fontSize: 20, fontWeight: 700 }}>{selected.name}</h3>
@@ -221,7 +224,7 @@ function Materials() {
                   </div>
                 </div>
               </div>
-            </div>
+            </AIWorkspaceModal>
           </>
         ) : (
           <div className="data-table-container">

@@ -82,7 +82,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 });
 
 // AI Invoice Analysis
-router.post('/:id/analyze', authenticateToken, async (req, res) => {
+router.post('/:id(\\d+)/analyze', authenticateToken, async (req, res) => {
   try {
     const item = await Invoice.findOne({
       where: { id: req.params.id, user_id: req.user.id }

@@ -1,3 +1,5 @@
+import AIWorkspaceModal from '../components/AIWorkspaceModal';
+import '../components/AIWorkspace.css';
 import React, { useState, useEffect, useContext, useMemo } from 'react';
 import api from '../services/api';
 import Modal from '../components/Modal';
@@ -108,7 +110,7 @@ function Customers() {
         {selected ? (
           <>
             <div className="back-link" onClick={() => { setSelected(null); setAiResult(''); }}>← Back to list</div>
-            <div className="detail-view">
+            <AIWorkspaceModal title="Record details" onClose={() => setSelected(null)}>
               <div className="detail-header">
                 <div>
                   <h3 style={{ fontSize: 20, fontWeight: 700 }}>{selected.name}</h3>
@@ -144,7 +146,7 @@ function Customers() {
                 )}
                 <AIOutput content={aiResult} loading={aiLoading} title="AI Customer Analysis" />
               </div>
-            </div>
+            </AIWorkspaceModal>
           </>
         ) : (
           <div className="data-table-container">

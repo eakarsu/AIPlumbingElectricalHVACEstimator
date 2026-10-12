@@ -1,3 +1,5 @@
+
+import FullAIExamples, { useFullAIExamples } from "../components/FullAIExamples.jsx";
 import React, { useState, useContext } from 'react';
 import api from '../services/api';
 import AIOutput from '../components/AIOutput';
@@ -12,6 +14,8 @@ const emptyForm = {
 const statusColors = { compliant: '#059669', non_compliant: '#dc2626', review_needed: '#d97706', needs_review: '#d97706' };
 
 function CodeComplianceChecker() {
+  const fullAIExamples = useFullAIExamples();
+
   const [formData, setFormData] = useState(emptyForm);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -55,11 +59,11 @@ function CodeComplianceChecker() {
       </div>
       <div className="page-body">
         <div className="data-table-container" style={{ marginBottom: 24 }}>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} data-full-ai-workspace="CodeComplianceChecker"><FullAIExamples controller={fullAIExamples} disabled={Boolean(loading)} />
             <div className="form-row">
               <div className="form-group">
                 <label>Work Type *</label>
-                <select className="form-control" value={formData.workType} onChange={e => setFormData({ ...formData, workType: e.target.value })}>
+                <select className="form-control" value={formData.workType} onChange={e => setFormData({ ...formData, workType: e.target.value })} data-full-ai-field={fullAIExamples.bind({ current: formData.workType, change: e => setFormData({ ...formData, workType: e.target.value }), label: "formData.workType", manual: false, json: false }, "p1-2192", undefined)}>
                   <option>Plumbing</option>
                   <option>Electrical</option>
                   <option>HVAC</option>
@@ -73,7 +77,7 @@ function CodeComplianceChecker() {
                   value={formData.jurisdiction}
                   onChange={e => setFormData({ ...formData, jurisdiction: e.target.value })}
                   placeholder="e.g., California IBC 2022, Texas, New York City"
-                  required
+                  required data-full-ai-field={fullAIExamples.bind({ current: formData.jurisdiction, change: e => setFormData({ ...formData, jurisdiction: e.target.value }), label: "formData.jurisdiction", manual: false, json: false }, "p1-2652", undefined)}
                 />
               </div>
             </div>
@@ -85,7 +89,7 @@ function CodeComplianceChecker() {
                 value={formData.workDescription}
                 onChange={e => setFormData({ ...formData, workDescription: e.target.value })}
                 placeholder="Describe the work being performed - e.g., Installing 200A electrical panel upgrade with new service entrance, sub-panel in garage, and 20 circuit breakers..."
-                required
+                required data-full-ai-field={fullAIExamples.bind({ current: formData.workDescription, change: e => setFormData({ ...formData, workDescription: e.target.value }), label: "formData.workDescription", manual: false, json: false }, "p1-3112", undefined)}
               />
             </div>
             <button type="submit" className="btn btn-ai" disabled={loading}>

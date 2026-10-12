@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const pool = require('../config/database');
+const pool = require('../config/pg');
 
 let fetchFn = global.fetch;
 if (!fetchFn) {

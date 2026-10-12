@@ -1,3 +1,5 @@
+
+import FullAIExamples, { useFullAIExamples } from "../components/FullAIExamples.jsx";
 import React, { useState, useContext } from 'react';
 import api from '../services/api';
 import AIOutput from '../components/AIOutput';
@@ -13,6 +15,8 @@ function safeParseJSON(text, fallback) {
 }
 
 function ScheduleOptimize() {
+  const fullAIExamples = useFullAIExamples();
+
   const [jobsText, setJobsText] = useState(
     '[\n  {"id":"J1","address":"123 Oak St","duration_hr":3,"priority":"high","skills":["plumbing"]}\n]'
   );
@@ -71,7 +75,7 @@ function ScheduleOptimize() {
       </div>
       <div className="page-body">
         <div className="data-table-container" style={{ marginBottom: 24 }}>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} data-full-ai-workspace="ScheduleOptimize"><FullAIExamples controller={fullAIExamples} disabled={Boolean(loading)} />
             <div className="form-row">
               <div className="form-group" style={{ flex: 1 }}>
                 <label>Jobs (JSON array) *</label>
@@ -80,7 +84,7 @@ function ScheduleOptimize() {
                   rows={6}
                   value={jobsText}
                   onChange={(e) => setJobsText(e.target.value)}
-                  style={{ fontFamily: 'monospace', fontSize: 12 }}
+                  style={{ fontFamily: 'monospace', fontSize: 12 }} data-full-ai-field={fullAIExamples.bind({ current: jobsText, change: (e) => setJobsText(e.target.value), label: "jobsText", manual: false, json: false, sample: '[\n  {"id":"J1","address":"123 Oak St","duration_hr":3,"priority":"high","skills":["plumbing"]}\n]' }, "p1-2691", undefined)}
                 />
               </div>
               <div className="form-group" style={{ flex: 1 }}>
@@ -90,7 +94,7 @@ function ScheduleOptimize() {
                   rows={6}
                   value={techsText}
                   onChange={(e) => setTechsText(e.target.value)}
-                  style={{ fontFamily: 'monospace', fontSize: 12 }}
+                  style={{ fontFamily: 'monospace', fontSize: 12 }} data-full-ai-field={fullAIExamples.bind({ current: techsText, change: (e) => setTechsText(e.target.value), label: "techsText", manual: false, json: false, sample: '[\n  {"id":"T1","name":"Alex","skills":["plumbing","HVAC"],"start":"08:00","end":"17:00","home":"100 Main St"}\n]' }, "p1-3115", undefined)}
                 />
               </div>
             </div>
@@ -101,7 +105,7 @@ function ScheduleOptimize() {
                 rows={2}
                 value={constraints}
                 onChange={(e) => setConstraints(e.target.value)}
-                placeholder="e.g., No overtime; lunch break 12:00-12:30; service area within 20 mi"
+                placeholder="e.g., No overtime; lunch break 12:00-12:30; service area within 20 mi" data-full-ai-field={fullAIExamples.bind({ current: constraints, change: (e) => setConstraints(e.target.value), label: "constraints", manual: false, json: false, sample: '' }, "p1-3530", undefined)}
               />
             </div>
             <button type="submit" className="btn btn-ai" disabled={loading}>

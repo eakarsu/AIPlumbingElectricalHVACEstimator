@@ -1,5 +1,8 @@
+import AIWorkspaceModal from '../components/AIWorkspaceModal';
+import '../components/AIWorkspace.css';
 import React, { useState, useEffect, useContext } from 'react';
 import api from '../services/api';
+import { listPayload } from '../services/listPayload';
 import Modal from '../components/Modal';
 import AIOutput from '../components/AIOutput';
 import { ToastContext } from '../App';
@@ -22,7 +25,7 @@ function ServiceContracts() {
   const addToast = useContext(ToastContext);
 
   const fetchItems = async () => {
-    try { const { data } = await api.get('/service-contracts'); setItems(data); } catch (err) { console.error(err); }
+    try { const { data } = await api.get('/service-contracts'); setItems(listPayload(data)); } catch (err) { console.error(err); }
   };
   useEffect(() => { fetchItems(); }, []);
 
@@ -85,7 +88,7 @@ function ServiceContracts() {
         {selected ? (
           <>
             <div className="back-link" onClick={() => { setSelected(null); setAiResult(''); }}>← Back to list</div>
-            <div className="detail-view">
+            <AIWorkspaceModal title="Record details" onClose={() => setSelected(null)}>
               <div className="detail-header">
                 <div>
                   <h3 style={{ fontSize: 20, fontWeight: 700 }}>{selected.contractNumber}</h3>
@@ -137,7 +140,7 @@ function ServiceContracts() {
                 {selected.notes && <div className="detail-field" style={{ marginTop: 16 }}><div className="label">Notes</div><div className="value">{selected.notes}</div></div>}
                 <AIOutput content={aiResult} loading={aiLoading} title="AI Contract Analysis" />
               </div>
-            </div>
+            </AIWorkspaceModal>
           </>
         ) : (
           <div className="data-table-container">

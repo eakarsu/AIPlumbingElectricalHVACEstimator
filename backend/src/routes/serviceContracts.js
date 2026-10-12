@@ -92,4 +92,31 @@ router.post('/ai/analyze', authenticateToken, async (req, res) => {
   }
 });
 
+// AI Service Contract Analysis for a single contract by id
+router.post('/:id(\\d+)/analyze', authenticateToken, async (req, res) => {
+  try {
+    const item = await ServiceContract.findOne({
+      where: { id: req.params.id, user_id: req.user.id }
+    });
+    if (!item) return res.status(404).json({ error: 'Service contract not found' });
+
+    const messages = [
+      {
+        role: 'system',
+        content: 'You are an expert service contract analyst for plumbing, electrical, and HVAC trades businesses. Provide detailed analysis of service contracts including pricing competitiveness, coverage adequacy, renewal strategies, and profitability insights.'
+      },
+      {
+        role: 'user',
+        content: `Analyze this service contract and provide insights:\n\n${JSON.stringify(item.toJSON(), null, 2)}\n\nProvide:\n1. **Pricing Analysis** - is the monthly/annual fee competitive?\n2. **Coverage Assessment** - are visits and services adequate?\n3. **Profitability Estimate** based on service type\n4. **Renewal Strategy** recommendations\n5. **Risk Assessment** for the contract terms\n6. **Upsell Opportunities** for additional services`
+      }
+    ];
+
+    const result = await callOpenRouter(messages);
+    const aiContent = result.choices[0].message.content;
+    res.json({ analysis: aiContent });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

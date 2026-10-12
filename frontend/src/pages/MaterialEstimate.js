@@ -1,3 +1,5 @@
+
+import FullAIExamples, { useFullAIExamples } from "../components/FullAIExamples.jsx";
 import React, { useState, useContext } from 'react';
 import api from '../services/api';
 import AIOutput from '../components/AIOutput';
@@ -11,6 +13,8 @@ const emptyForm = {
 };
 
 function MaterialEstimate() {
+  const fullAIExamples = useFullAIExamples();
+
   const [formData, setFormData] = useState(emptyForm);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -50,11 +54,11 @@ function MaterialEstimate() {
       </div>
       <div className="page-body">
         <div className="data-table-container" style={{ marginBottom: 24 }}>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} data-full-ai-workspace="MaterialEstimate"><FullAIExamples controller={fullAIExamples} disabled={Boolean(loading)} />
             <div className="form-row">
               <div className="form-group">
                 <label>Job Type *</label>
-                <select className="form-control" value={formData.jobType} onChange={e => setFormData({ ...formData, jobType: e.target.value })}>
+                <select className="form-control" value={formData.jobType} onChange={e => setFormData({ ...formData, jobType: e.target.value })} data-full-ai-field={fullAIExamples.bind({ current: formData.jobType, change: e => setFormData({ ...formData, jobType: e.target.value }), label: "formData.jobType", manual: false, json: false }, "p1-1818", undefined)}>
                   <option>Plumbing</option>
                   <option>Electrical</option>
                   <option>HVAC</option>
@@ -63,11 +67,11 @@ function MaterialEstimate() {
               </div>
               <div className="form-group">
                 <label>Area / Quantity</label>
-                <input className="form-control" type="number" min="0" value={formData.area} onChange={e => setFormData({ ...formData, area: e.target.value })} placeholder="e.g., 1500" />
+                <input className="form-control" type="number" min="0" value={formData.area} onChange={e => setFormData({ ...formData, area: e.target.value })} placeholder="e.g., 1500" data-full-ai-field={fullAIExamples.bind({ current: formData.area, change: e => setFormData({ ...formData, area: e.target.value }), label: "formData.area", manual: false, json: false }, "p1-2277", undefined)} />
               </div>
               <div className="form-group">
                 <label>Units</label>
-                <select className="form-control" value={formData.units} onChange={e => setFormData({ ...formData, units: e.target.value })}>
+                <select className="form-control" value={formData.units} onChange={e => setFormData({ ...formData, units: e.target.value })} data-full-ai-field={fullAIExamples.bind({ current: formData.units, change: e => setFormData({ ...formData, units: e.target.value }), label: "formData.units", manual: false, json: false }, "p1-2565", undefined)}>
                   <option value="sq ft">sq ft</option>
                   <option value="linear ft">linear ft</option>
                   <option value="units">units</option>
@@ -84,7 +88,7 @@ function MaterialEstimate() {
                 value={formData.description}
                 onChange={e => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Describe the project in detail - e.g., Replace main water line from street to house, 3/4 inch copper pipe, approximately 80 linear feet..."
-                required
+                required data-full-ai-field={fullAIExamples.bind({ current: formData.description, change: e => setFormData({ ...formData, description: e.target.value }), label: "formData.description", manual: false, json: false }, "p1-3147", undefined)}
               />
             </div>
             <button type="submit" className="btn btn-ai" disabled={loading}>

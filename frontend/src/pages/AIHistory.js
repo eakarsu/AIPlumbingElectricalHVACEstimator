@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import { listPayload } from '../services/listPayload';
+import AIReport from '../components/AIReport';
 
 function AIHistory() {
   const [results, setResults] = useState([]);
@@ -7,20 +9,21 @@ function AIHistory() {
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState(null);
 
   const fetchHistory = async (p = 1) => {
     setLoading(true);
     try {
       const { data } = await api.get(`/ai/history?page=${p}&limit=20`);
       // Handle both new { data, pagination } format and legacy { results, totalPages }
-      if (data.data) {
-        setResults(data.data);
+      if (Array.isArray(data?.data)) {
+        setResults(listPayload(data));
         setTotalPages(data.pagination?.totalPages || 1);
         setTotal(data.pagination?.total || 0);
       } else {
-        setResults(data.results || []);
-        setTotalPages(data.totalPages || 1);
-        setTotal(data.total || 0);
+        setResults(listPayload(data, 'results'));
+        setTotalPages(data?.totalPages || 1);
+        setTotal(data?.total || 0);
       }
     } catch (err) {
       console.error(err);
@@ -52,7 +55,7 @@ function AIHistory() {
                     <th>Date</th>
                     <th>Endpoint</th>
                     <th>Quote ID</th>
-                    <th>Result Preview</th>
+                    <th>Report</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -63,13 +66,16 @@ function AIHistory() {
                       </td>
                       <td><span style={{ fontFamily: 'monospace', fontSize: 12, background: '#f3f4f6', padding: '2px 8px', borderRadius: 4 }}>{r.endpoint}</span></td>
                       <td>{r.quote_id || r.quoteId || '-'}</td>
-                      <td style={{ maxWidth: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 12, color: '#6b7280' }}>
-                        {typeof r.result === 'object' ? JSON.stringify(r.result).substring(0, 120) + '...' : String(r.result || '').substring(0, 120)}
-                      </td>
+                      <td><button type="button" className="btn btn-secondary btn-sm" onClick={() => setSelected(r)}>View report</button></td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+
+              {selected && <section aria-label="Saved AI report" style={{ margin: 24 }}>
+                <button type="button" className="btn btn-secondary btn-sm" onClick={() => setSelected(null)}>Close report</button>
+                <AIReport response={selected.result} title={`Saved ${selected.endpoint || 'AI'} report`} />
+              </section>}
 
               {totalPages > 1 && (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 12, padding: '16px 0' }}>

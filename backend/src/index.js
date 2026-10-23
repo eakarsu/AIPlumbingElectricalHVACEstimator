@@ -61,6 +61,7 @@ app.use('/api/service-contracts', serviceContractRoutes);
 app.use('/api/permits', permitRoutes);
 app.use('/api/suppliers', supplierRoutes);
 app.use('/api/ai', aiHistoryRoutes);
+app.use('/api/wave42', require('./routes/wave42'));
 app.use('/api/integrations', require('./routes/integrations'));
 // Alias: /api/estimates maps to job-quotes (file upload endpoint uses estimates/:id/upload)
 app.use('/api/estimates', jobQuoteRoutes);
